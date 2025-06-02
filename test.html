@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit Stream Info</title>
+  <style>
+    :root {
+      --bg: #18181b;
+      --fg: #ffffff;
+      --accent: #9147ff;
+      --input-bg: #3c3c3f;
+      --border-radius: 8px;
+      --footer-height: 60px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0.5rem;
+      color: var(--fg);
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
+    .tag-box, .category-box, .language-box, .content-box {
+      margin-bottom: 1rem;
+    }
+
+    .category-suggestion,
+    .tag-suggestion {
+      display: flex;
+      align-items: center;
+      background: #2c2c30;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 0.5rem;
+    }
+
+    .category-suggestion img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+
+    .suggestion-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #footer {
+      height: var(--footer-height);
+      background: #0e0e10;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      position: sticky;
+      bottom: 0;
+    }
+
+    #doneButton {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .content-option {
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 300px) {
+      body {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main">
+    <div class="field">
+      <label for="streamTitle">Title</label>
+      <input type="text" id="streamTitle" maxlength="140" />
+    </div>
+
+    <div class="field">
+      <label for="goLiveNotification">Go Live Notification</label>
+      <input type="text" id="goLiveNotification" maxlength="140" />
+    </div>
+
+    <div class="category-box">
+      <label for="categorySearch">Category</label>
+      <input type="text" id="categorySearch" placeholder="Search for category" />
+      <div id="categorySuggestions">
+        <!-- Example suggestion -->
+        <div class="category-suggestion">
+          <img src="Just-Chatting.jpg" alt="Just Chatting">
+          <div class="suggestion-info">
+            <span>Just Chatting</span>
+            <small>197K Viewers • 31.1M Followers</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-box">
+      <label for="tagInput">Tags</label>
+      <input type="text" id="tagInput" placeholder="Use Enter after each tag" />
+      <div id="tagSuggestions">
+        <!-- Dynamic tag suggestions -->
+      </div>
+    </div>
+
+    <div class="language-box">
+      <label for="languageSelect">Stream Language</label>
+      <select id="languageSelect">
+        <option>English</option>
+        <option>Bahasa Indonesia</option>
+        <option>Català</option>
+        <option>Dansk</option>
+        <option>Deutsch</option>
+        <option>Español</option>
+        <option>Français</option>
+        <option>Italiano</option>
+        <option>Magyar</option>
+        <option>Nederlands</option>
+        <option>Norsk</option>
+        <option>Polski</option>
+        <option>Português</option>
+        <option>Română</option>
+        <option>Slovenčina</option>
+        <option>Suomi</option>
+        <option>Svenska</option>
+        <option>Tagalog</option>
+        <option>Tiếng Việt</option>
+        <option>Türkçe</option>
+        <option>Čeština</option>
+        <option>Ελληνικά</option>
+        <option>Български</option>
+        <option>Русский</option>
+        <option>Українська</option>
+        <option>العربية</option>
+        <option>بهاس ملايو</option>
+        <option>मानक हिन्दी</option>
+        <option>ภาษาไทย</option>
+        <option>中文</option>
+        <option>日本語</option>
+        <option>粵語</option>
+        <option>한국어</option>
+        <option>American Sign Language</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="content-box">
+      <label>Content Classification</label>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="politicsSensitive" />
+          Politics and Sensitive Social Issues
+        </label>
+        <small>Discussions or debates about politics or sensitive social issues...</small>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="drugsIntoxication" />
+          Drugs, Intoxication, or Excessive Tobacco Use
+        </label>
+        <small>Excessive tobacco glorification or promotion...</small>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="gambling" />
+          Gambling
+        </label>
+        <small>Participating in or promoting online or in-person gambling...</small>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="matureGame" />
+          Mature-rated game
+        </label>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="profanity" />
+          Significant Profanity or Vulgarity
+        </label>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="sexualThemes" />
+          Sexual Themes
+        </label>
+      </div>
+      <div class="content-option">
+        <label class="checkbox-label">
+          <input type="checkbox" id="violence" />
+          Violent and Graphic Depictions
+        </label>
+      </div>
+    </div>
+
+    <div class="checkbox-label">
+      <input type="checkbox" id="rerun" />
+      Let viewers know your stream was previously recorded.
+    </div>
+
+    <div class="checkbox-label">
+      <input type="checkbox" id="brandedContent" />
+      Let viewers know if your stream features branded content.
+    </div>
+  </div>
+
+  <div id="footer">
+    <button id="doneButton">Done</button>
+  </div>
+
+</body>
+</html>

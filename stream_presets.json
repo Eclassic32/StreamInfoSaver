@@ -2,19 +2,19 @@
     {
         "name": "default", 
         "description": "Default info to be based off",
-        "lastModified": "2023-10-01T12:00:00Z",
+        "lastModified": "2025-05-28T12:00:00Z",
         "info": {
             "title": "Doing stuff",
             "golivenotification": "somenotification",
             "category": "Just Chatting",
-            "categoryId": "12345", // Find out later
+            "categoryId": "509658",
             "tags": ["example", "sample"],
             "language": "en",
             "contentClassification": {
                 "political": false,
                 "drugs": false,
                 "gambling": false,
-                "matureGames": false, // Auto-selected based on category
+                "matureGames": false,
                 "profanity": false,
                 "sexualContent": false,
                 "violence": false
@@ -26,12 +26,12 @@
     {
         "name": "coding",
         "description": "coding streams",
-        "lastModified": "2023-10-01T12:00:00Z",
-        "info": { // Not all fields are required, empty fields will be replaced with previous values
+        "lastModified": "2025-05-28T12:00:00Z",
+        "info": {
             "title": "Coding some stuff",
             "golivenotification": "mr. coder lmao",
             "category": "Software and Game Development",
-            "categoryId": "67890", // Find out later
+            "categoryId": "1469308723",
             "tags": ["English", "Russian", "coding"]
         }
     }
