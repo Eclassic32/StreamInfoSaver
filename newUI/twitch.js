@@ -55,6 +55,11 @@ class Twitch {
                                             { 'Authorization': `Bearer ${this.OAuthToken}` });
             if (response) {
                 console.log('OAuth token is valid.');
+
+                this.userId = response.user_id;
+                this.userLogin = response.login;
+                this.expiresIn = response.expires_in;
+
                 return true;
             } else {
                 console.error('Invalid OAuth token.');
@@ -69,9 +74,70 @@ class Twitch {
         return true;
     }
 
-
     // function to get current stream info
+    async getCurrentStreamInfo() {
+        if (!this.OAuthToken) {
+            console.error('No OAuth token found. Please authenticate first.');
+            return null;
+        }
+
+        try {
+            const response = await xhrRequest('GET', 
+                        `https://api.twitch.tv/helix/streams?user_id=${this.userId}`, 
+                        { 'Client-ID': env.TWITCH_PUBLIC_CLIENT_ID, 
+                        'Authorization': `Bearer ${this.OAuthToken}` });
+            console.log(response);
+            if (response.data && response.data.length > 0) {
+                
+                return response.data[0]; // Return the first stream info
+            } else {
+                console.log('No active streams found for this user.');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching current stream info:', error);
+            return null;
+        }
+    }
+    fillCurrentStreamInfo() { // FIX: seemingly not working on offline
+        const streamInfo = this.getCurrentStreamInfo();
+        if (!streamInfo) { return; }
+        
+        console.log(streamInfo);
+        
+
+        // document.getElementById('stream-title').value = streamInfo.title || '';
+        // document.getElementById('go-live-notification').value = streamInfo.tag_ids.join(', ') || '';
+        // document.getElementById('category-search').value = streamInfo.game_name || '';
+        // // Additional fields can be filled here
+        
+        
+    }
     // function to post new stream info
+    async postStreamInfo(streamData) {
+        if (!this.OAuthToken) {
+            console.error('No OAuth token found. Please authenticate first.');
+            return false;
+        }
+
+        try {
+            const response = await xhrRequest('PATCH',
+                'https://api.twitch.tv/helix/channels?broadcaster_id=' + this.userId, 
+                { 
+                    'Client-ID': env.TWITCH_PUBLIC_CLIENT_ID, 
+                    'Authorization': `Bearer ${this.OAuthToken}`,
+                    'Content-Type': 'application/json'
+                }, 
+                JSON.stringify(streamData)
+            );
+            console.log('Stream info posted successfully:', response);
+            return true;
+        } catch (error) {
+            console.error('Error posting stream info:', error);
+            return false;
+        }
+    }
+
 }
 
 class XHRError extends Error {
@@ -208,8 +274,7 @@ const twitchTagSuggestions = [
 
 // Done button functionality (placeholder)
 document.getElementById('done-button').addEventListener('click', function() {
-    console.log('Done button clicked');
-    console.log('Form data:', {
+    const data = {
         title: document.getElementById('stream-title').value,
         notification: document.getElementById('go-live-notification').value,
         category: document.getElementById('category-search').value,
@@ -218,5 +283,7 @@ document.getElementById('done-button').addEventListener('click', function() {
         brandedContent: document.getElementById('branded-content-checkbox').checked,
         language: document.getElementById('stream-language').value,
         classifications: selectedClassifications
-    });
+    }
+    console.log('Stream data to be posted:', data);
+    twitch.postStreamInfo(data);
 });
