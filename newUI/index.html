@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch - Edit Stream Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="editing-section">
+            <!-- Saved Configs Search -->
+            <div class="form-group">
+                <label for="configs-search">Configs</label>
+                <div class="active-configs hidden" id="active-configs">
+                    <div class="configs-info">
+                        <div class="configs-title">Previous</div>
+                        <p class="configs-description" id="configs-description">
+                        </p>
+                    </div>
+                    <div class="close-button">×</div>
+                </div>
+                <div class="search-wrapper">
+                    <input type="text" id="configs-search" placeholder="Custom config" autocomplete="off">
+                    <div class="dropdown" id="configs-dropdown" style="display: none;">
+                        <!-- configs suggestions will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title Input -->
+            <div class="form-group">
+                <label for="stream-title">Title</label>
+                <div class="input-wrapper">
+                    <input type="text" id="stream-title" placeholder="Your stream title" maxlength="140" value="My Big Goal">
+                    <span class="character-counter" id="title-counter">11/140</span>
+                </div>
+            </div>
+
+            <!-- Go Live Notification -->
+            <div class="form-group">
+                <label for="go-live-notification">Go Live Notification</label>
+                <div class="input-wrapper">
+                    <input type="text" id="go-live-notification" placeholder="NAME is going live!" maxlength="140">
+                    <span class="character-counter" id="notification-counter">0/140</span>
+                </div>
+                <div class="help-text">
+                    <a href="https://help.twitch.tv/s/article/how-to-use-go-live-notifications" class="learn-more">Learn More</a>
+                </div>
+            </div>
+
+            <!-- Category Search -->
+            <div class="form-group">
+                <label for="category-search">Category</label>
+                <div class="active-category hidden" id="active-category">
+                    <img src="Just-Chatting.jpg" alt="Just Chatting" class="category-image">
+                    <div class="category-info">
+                        <div class="category-title">Just Chatting</div>
+                        <p class="category-numbers" id="category-numbers">
+                            <span class="viewer-count"><span>153K</span> Viewers</span>
+                            <span class="dot">·</span>
+                            <span class="follower-count"><span>31.1M</span> Followers</span>
+                        </p>
+                        <div class="selected-tags" id="category-tags">
+                            <div class="tag">
+                                <span class="tag-text">IRL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="close-button">×</div>
+                </div>
+                <div class="search-wrapper">
+                    <input type="text" id="category-search" placeholder="Search for category" autocomplete="off">
+                    <div class="dropdown" id="category-dropdown" style="display: none;">
+                        <!-- Category suggestions will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags Input -->
+            <div class="form-group">
+                <label for="tags-input">Tags</label>
+                <div class="tags-wrapper">
+                    <div class="tags-input-container">
+                        <input type="text" id="tags-input" placeholder="Add a tag..." autocomplete="off">
+                        <button type="button" class="add-tag-btn" id="add-tag-btn">Add Tag</button>
+                    </div>
+                    <div class="dropdown" id="tags-dropdown" style="display: none;">
+                        <!-- Tag suggestions will be populated by JavaScript -->
+                    </div>
+                    <div class="selected-tags" id="selected-tags">
+                        <!-- Selected tags will appear here -->
+                    </div>
+                </div>
+                <div class="help-text">
+                    Add up to 10 tags. Each tag can be 25 characters long with no spaces or special characters.
+                </div>
+            </div>
+
+            <!-- Rerun Checkbox -->
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rerun-checkbox">
+                    <span class="checkmark"></span>
+                    <span class="label-text">Rerun</span>
+                </label>
+                <div class="help-text">This stream is a rerun of a previous broadcast.</div>
+            </div>
+
+            <!-- Branded Content Checkbox -->
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="branded-content-checkbox">
+                    <span class="checkmark"></span>
+                    <span class="label-text">Branded Content</span>
+                </label>
+                <div class="help-text">This stream includes sponsored or promotional content.</div>
+            </div>
+
+            <!-- Stream Language -->
+            <div class="form-group">
+                <label for="stream-language">Stream Language</label>
+                <select id="stream-language">
+                    <option value="en">English</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="ca">Català</option>
+                    <option value="da">Dansk</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="it">Italiano</option>
+                    <option value="hu">Magyar</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="no">Norsk</option>
+                    <option value="pl">Polski</option>
+                    <option value="pt">Português</option>
+                    <option value="ro">Română</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="fi">Suomi</option>
+                    <option value="sv">Svenska</option>
+                    <option value="tl">Tagalog</option>
+                    <option value="vi">Tiếng Việt</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="cs">Čeština</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="bg">Български</option>
+                    <option value="ru">Русский</option>
+                    <option value="uk">Українська</option>
+                    <option value="ar">العربية</option>
+                    <option value="ms">بهاس ملايو</option>
+                    <option value="hi">मानक हिन्दी</option>
+                    <option value="th">ภาษาไทย</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                    <option value="yue">粵語</option>
+                    <option value="ko">한국어</option>
+                    <option value="asl">American Sign Language</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Content Classification -->
+            <div class="form-group">
+                <label>Content Classification</label>
+                <div class="content-classification">
+                    <button type="button" class="expand-btn" id="classification-expand">
+                        <span>Select content labels</span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+                    <div class="classification-content" id="classification-content" style="display: none;">
+                        <div class="classification-help">
+                            Learn more about these definitions and what is allowed in <a href="https://safety.twitch.tv/s/article/Content-Classification-Guidelines" class="learn-more">our guidelines</a>.
+                        </div>
+                        
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-politics">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Politics and Sensitive Social Issues</span>
+                            </label>
+                            <div class="classification-description">
+                                Discussions or debates about politics or sensitive social issues such as elections, civic integrity, military conflict, and civil rights in a polarizing manner.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-drugs">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Drugs, Intoxication, or Excessive Tobacco Use</span>
+                            </label>
+                            <div class="classification-description">
+                                Excessive tobacco glorification or promotion, any marijuana consumption/use, legal drug and alcohol induced intoxication, discussions of illegal drugs.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-gambling">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Gambling</span>
+                            </label>
+                            <div class="classification-description">
+                                Participating in or promoting online or in-person gambling, poker, or fantasy sports that involve the exchange of real money.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-mature">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Mature-rated game</span>
+                            </label>
+                            <div class="classification-description">
+                                Games that are rated Mature or less suitable for a younger audience.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-profanity">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Significant Profanity or Vulgarity</span>
+                            </label>
+                            <div class="classification-description">
+                                Prolonged, and repeated use of obscenities, profanities, and vulgarities, especially as a regular part of speech.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-sexual">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Sexual Themes</span>
+                            </label>
+                            <div class="classification-description">
+                                Content that focuses on sexualized physical attributes and activities, sexual topics, or experiences.
+                            </div>
+                        </div>
+
+                        <div class="classification-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="content-classification-violence">
+                                <span class="checkmark"></span>
+                                <span class="label-text">Violent and Graphic Depictions</span>
+                            </label>
+                            <div class="classification-description">
+                                Simulations and/or depictions of realistic violence, gore, extreme injury, or death.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="selected-tags" id="classification-tags">
+                        <!-- Classification tags will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Done Button Section (10% height, always visible) -->
+        <div class="done-section">
+            <button type="button" class="done-btn" id="done-button">Done</button>
+        </div>
+    </div>
+
+    <script src="twitch.js"></script>
+    <script src="saved.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[
+    {
+        "name": "default", 
+        "description": "Default info to be based off",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": {
+            "title": "Doing stuff",
+            "golivenotification": "somenotification",
+            "category": "Just Chatting",
+            "categoryId": "1", 
+            "tags": ["example", "sample"],
+            "language": "en",
+            "contentClassification": {
+                "political": false,
+                "drugs": false,
+                "gambling": false,
+                "matureGames": false, 
+                "profanity": false,
+                "sexualContent": false,
+                "violence": false
+            },
+            "rerun": false,
+            "branded": false
+        }
+    },
+    {
+        "name": "coding",
+        "description": "coding streams",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": { 
+            "title": "Coding some stuff",
+            "golivenotification": "mr. coder lmao",
+            "category": "Software and Game Development",
+            "categoryId": "67890",
+            "tags": ["English", "Russian", "coding"]
+        }
+    }
+]
