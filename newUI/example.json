@@ -8,6 +8,7 @@
             "notification": "somenotification",
             "category": "Just Chatting",
             "categoryId": 1, 
+            "catID": 509658,
             "tags": ["example", "sample"],
             "language": "en",
             "contentClassification": {
@@ -31,7 +32,7 @@
             "title": "Coding some stuff",
             "notification": "mr. coder lmao",
             "category": "Software and Game Development",
-            "categoryId": 67890,
+            "categoryId": 1469308723,
             "tags": ["English", "Russian", "coding"]
         }
     },
