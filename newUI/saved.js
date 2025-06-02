@@ -166,7 +166,9 @@ function initializeConfigSearch() {
         mainEl.language.value = info.language || mainEl.language.value;
 
         // Set the category
-        mainEl.category.value = info.category || mainEl.category.placeholder;
+        if (info.categoryId){
+            window.selectCategory(info.categoryId);
+        }
 
         // Replace tags and render them 
         if (info.tags && info.tags.length > 0) {

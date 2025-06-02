@@ -7,7 +7,7 @@
             "title": "Doing stuff",
             "notification": "somenotification",
             "category": "Just Chatting",
-            "categoryId": "1", 
+            "categoryId": 1, 
             "tags": ["example", "sample"],
             "language": "en",
             "contentClassification": {
@@ -31,7 +31,7 @@
             "title": "Coding some stuff",
             "notification": "mr. coder lmao",
             "category": "Software and Game Development",
-            "categoryId": "67890",
+            "categoryId": 67890,
             "tags": ["English", "Russian", "coding"]
         }
     },
@@ -43,7 +43,7 @@
             "title": "3rd stream",
             "notification": "notfis",
             "category": "Tester",
-            "categoryId": "1", 
+            "categoryId": 1, 
             "tags": ["testetr", "asdasfa"],
             "language": "ru",
             "contentClassification": {

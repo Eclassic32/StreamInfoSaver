@@ -190,12 +190,12 @@ function initializeCategorySearch() {
         items[currentCategoryIndex].scrollIntoView({ block: 'nearest' });
     };
 
-    window.selectCategory = function() {
-        if (currentCategoryIndex >= 0 && configs[currentCategoryIndex]) {
+    window.selectCategory = function(id = null) {
+        if ((currentCategoryIndex >= 0 && configs[currentCategoryIndex]) || id !== null){
             // Set active category
-            const category = configs[currentCategoryIndex];
-
-            console.log(category);
+            const category = (id !== null) ? twitchCategories.find(cat => cat.id === id) : configs[currentCategoryIndex];
+            console.log(id, category);
+            if (!category) return;
 
             categoryInput.classList.add('hidden');
             active.image.src = category.image;
