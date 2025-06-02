@@ -7,6 +7,10 @@ let configs = [];
 let tagSuggestions = [];
 let mainEl = {};
 
+const classificationCheckboxes = [
+        'politics', 'drugs', 'gambling', 'mature', 'profanity', 'sexual', 'violence'
+];
+
 // Content classification labels
 const classificationLabels = {
     politics: "Politics",
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeContentClassification();
     initializeKeyboardNavigation();
     initializeConfigSearch();
-
+    
     mainEl = {
         title: document.getElementById('stream-title'),
         notification: document.getElementById('go-live-notification'),
@@ -34,7 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
         rerun: document.getElementById('rerun-checkbox'),
         brandedContent: document.getElementById('branded-content-checkbox'),
         language: document.getElementById('stream-language'),
+        classificationCheckboxes: {}
     };
+
+    classificationCheckboxes.forEach(classification => {
+        mainEl.classificationCheckboxes[classification] = document.getElementById(`content-classification-${classification}`);
+        if (mainEl.classificationCheckboxes[classification].checked) {
+            window.addClassificationTag(classification);
+        }
+    });
+
 });
 
 // Character counter functionality
@@ -103,7 +116,7 @@ function initializeCategorySearch() {
     });
 
     function showCategoryDropdown(query) {
-        configs = sampleCategories.filter(category => 
+        configs = twitchCategories.filter(category => 
             category.title.toLowerCase().includes(query)
         );
 
@@ -264,7 +277,7 @@ function initializeTagsInput() {
             return;
         }
 
-        tagSuggestions = sampleTagSuggestions.filter(tag => 
+        tagSuggestions = twitchTagSuggestions.filter(tag => 
             tag.toLowerCase().includes(query) && !selectedTags.includes(tag)
         );
 
@@ -330,6 +343,8 @@ function initializeTagsInput() {
 
     // Expose functions globally
     window.removeTag = removeTag;
+    window.addTag = addTag;
+
 
     window.navigateTags = function(direction) {
         if (tagsDropdown.style.display === 'none') return;
@@ -379,11 +394,6 @@ function initializeContentClassification() {
         }
     });
 
-    // Initialize classification checkboxes
-    const classificationCheckboxes = [
-        'politics', 'drugs', 'gambling', 'mature', 'profanity', 'sexual', 'violence'
-    ];
-
     classificationCheckboxes.forEach(classification => {
         const checkbox = document.getElementById(`content-classification-${classification}`);
         if (checkbox) {
@@ -430,6 +440,7 @@ function initializeContentClassification() {
     }
 
     // Expose function globally
+    window.addClassificationTag = addClassificationTag;
     window.removeClassificationTag = removeClassificationTag;
 }
 
@@ -554,19 +565,4 @@ document.addEventListener('click', function(e) {
         tagsDropdown.style.display = 'none';
         currentTagIndex = -1;
     }
-});
-
-// Done button functionality (placeholder)
-document.getElementById('done-button').addEventListener('click', function() {
-    console.log('Done button clicked');
-    console.log('Form data:', {
-        title: document.getElementById('stream-title').value,
-        notification: document.getElementById('go-live-notification').value,
-        category: document.getElementById('category-search').value,
-        tags: selectedTags,
-        rerun: document.getElementById('rerun-checkbox').checked,
-        brandedContent: document.getElementById('branded-content-checkbox').checked,
-        language: document.getElementById('stream-language').value,
-        classifications: selectedClassifications
-    });
 });

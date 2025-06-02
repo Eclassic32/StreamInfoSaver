@@ -159,11 +159,39 @@ function initializeConfigSearch() {
     function importDataFromConfig(config) {
         console.log('Importing data from config:', config);
         const info = config.info || {};
-        // fix this later
-
+        
+        // Change title, notification, language
         mainEl.title.value = info.title || mainEl.title.placeholder;
-        mainEl.description.value = info.description || mainEl.description.placeholder;
-        mainEl.tags.value = info.tags ? info.tags.join(', ') : '';
+        mainEl.notification.value = info.notification || mainEl.notification.placeholder;
+        mainEl.language.value = info.language || mainEl.language.value;
+
+        // Set the category
         mainEl.category.value = info.category || mainEl.category.placeholder;
+
+        // Replace tags and render them 
+        if (info.tags && info.tags.length > 0) {
+            selectedTags = [];
+            info.tags.forEach(tag => {
+                window.addTag(tag);
+            });
+        }
+
+        // Set Reruns and Branded Content
+        mainEl.rerun.checked = (info.rerun != undefined) ? info.rerun : mainEl.rerun.checked;
+        mainEl.brandedContent.checked = (info.branded != undefined) ? info.branded : mainEl.brandedContent.checked;
+
+        // Set Content Classification
+        if (info.contentClassification) {
+            Object.keys(info.contentClassification).forEach(key => {
+                const checkbox = mainEl.classificationCheckboxes[key];
+                if (!checkbox) { return;}
+
+                if (checkbox.checked == info.contentClassification[key]) {
+                    return; // No change needed
+                }
+
+                checkbox.click();
+            });
+        }
     }
 }

@@ -5,18 +5,18 @@
         "lastModified": "2023-10-01T12:00:00Z",
         "info": {
             "title": "Doing stuff",
-            "golivenotification": "somenotification",
+            "notification": "somenotification",
             "category": "Just Chatting",
             "categoryId": "1", 
             "tags": ["example", "sample"],
             "language": "en",
             "contentClassification": {
-                "political": false,
+                "politics": false,
                 "drugs": false,
                 "gambling": false,
-                "matureGames": false, 
+                "mature": false, 
                 "profanity": false,
-                "sexualContent": false,
+                "sexual": false,
                 "violence": false
             },
             "rerun": false,
@@ -29,10 +29,34 @@
         "lastModified": "2023-10-01T12:00:00Z",
         "info": { 
             "title": "Coding some stuff",
-            "golivenotification": "mr. coder lmao",
+            "notification": "mr. coder lmao",
             "category": "Software and Game Development",
             "categoryId": "67890",
             "tags": ["English", "Russian", "coding"]
+        }
+    },
+    {
+        "name": "test", 
+        "description": "test info to be based off",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": {
+            "title": "3rd stream",
+            "notification": "notfis",
+            "category": "Tester",
+            "categoryId": "1", 
+            "tags": ["testetr", "asdasfa"],
+            "language": "ru",
+            "contentClassification": {
+                "politics": true,
+                "drugs": false,
+                "gambling": true,
+                "mature": false, 
+                "profanity": false,
+                "sexual": false,
+                "violence": true
+            },
+            "rerun": true,
+            "branded": true
         }
     }
 ]

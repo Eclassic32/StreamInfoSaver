@@ -1,5 +1,5 @@
 // Sample category data
-const sampleCategories = [
+const twitchCategories = [
     {
         id: 1,
         title: "Just Chatting",
@@ -67,7 +67,7 @@ const sampleCategories = [
 ];
 
 // Sample tag suggestions
-const sampleTagSuggestions = [
+const twitchTagSuggestions = [
     "MinecraftFreizeitpark",
     "minecraftplays", 
     "min",
@@ -85,3 +85,19 @@ const sampleTagSuggestions = [
     "interactive",
     "wholesome"
 ];
+
+
+// Done button functionality (placeholder)
+document.getElementById('done-button').addEventListener('click', function() {
+    console.log('Done button clicked');
+    console.log('Form data:', {
+        title: document.getElementById('stream-title').value,
+        notification: document.getElementById('go-live-notification').value,
+        category: document.getElementById('category-search').value,
+        tags: selectedTags,
+        rerun: document.getElementById('rerun-checkbox').checked,
+        brandedContent: document.getElementById('branded-content-checkbox').checked,
+        language: document.getElementById('stream-language').value,
+        classifications: selectedClassifications
+    });
+});
