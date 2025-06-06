@@ -10,7 +10,7 @@
 (function() {
     'use strict';
     window.el = {
-        title: 'edit-broadcast-title-formgroup',
+        title: '',
         notifications: '',
         category: '',
         tags: '',
@@ -21,8 +21,7 @@
     }
 
     // Initialize
-    function ChangeTextbox(elementId, text) {
-        const textarea = document.getElementById(elementId);
+    function ChangeTextbox(textarea, text) {
         const reactKey = Object.keys(textarea).find(key => key.startsWith('__react'));
         if (!reactKey) {
             console.error('❌ React instance not found');
@@ -45,40 +44,36 @@
             });
             
             textarea.dispatchEvent(inputEvent);
-            console.log(`✅ ${elementId} changed to: "${text}"`);
+            console.log(`✅ ${textarea.dataset.saverName} (${textarea.id}) changed to: "${text}"`);
             
             return true;
             
         } catch (error) {
-            console.error(`❌ Error updating ${elementId}:`, error);
+            console.error(`❌ Error updating ${textarea.dataset.saverName} (${textarea.id}):`, error);
             return false;
         }
     }
-
-    function getNotificationID() {
-        const notificationElement = document.querySelector('[placeholder="eclasx32 went live!"]');
-        if (!notificationElement) {
-            console.error('❌ Notification element not found');
-            return null;
-        }
-        return notificationElement.id;
-    } 
-
-    window.getNotificationID = getNotificationID;
-
     // Expose to global scope for console access
-    window.changeTextbox = function(elementId, text) {
+    window.changeTextbox = function(textbox, text) {
         init();
-        
+
         if (typeof text !== 'string') {
-            console.error('❌ Please provide a string. Usage: changeTextbox(elementIDs.element, "Your text here")');
+            console.error('❌ Please provide a string. Usage: changeTextbox(el.element, "Your text here")');
             return false;
         }   
 
-        return ChangeTextbox(elementId, text);
+        return ChangeTextbox(textbox, text);
     };
 
     function init() {
-        window.el.notifications = getNotificationID();
+        const path = (window.location.pathname).split("/")
+
+        window.el.title = document.querySelector(`#edit-broadcast-title-formgroup`);
+        window.el.title.dataset.saverName = "Title";
+        window.el.notifications = document.querySelector(`[placeholder="${path[3]} went live!"]`);
+        window.el.notifications.dataset.saverName = "Notifications";
+        
     }
+
+    window.init = init;
 })();
