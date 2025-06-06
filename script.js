@@ -2,23 +2,27 @@
 // @name         Textarea Console Command
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Exposes changeTitle() command to console for React textarea
-// @author       You
-// @match        *://*/*
+// @description  Changes the title of a Twitch stream using a console command.
+// @author       Eclassic32
+// @match        *://dashboard.twitch.tv/popout/u/*/stream-manager/edit-stream-info
 // @grant        none
 // ==/UserScript==
 (function() {
     'use strict';
-    // React-specific method that worked
-    function reactChangeTitle(text) {
-        const textarea = document.getElementById('edit-broadcast-title-formgroup');
-        if (!textarea) {
-            console.error('❌ Textarea not found');
-            return false;
-        }
-        console.log(`🔄 Setting textarea to: "${text}"`);
-        
-        // Find React fiber
+    window.el = {
+        title: 'edit-broadcast-title-formgroup',
+        notifications: '',
+        category: '',
+        tags: '',
+        language: '',
+        classification: '',
+        rerun: '',
+        branded: ''
+    }
+
+    // Initialize
+    function ChangeTextbox(elementId, text) {
+        const textarea = document.getElementById(elementId);
         const reactKey = Object.keys(textarea).find(key => key.startsWith('__react'));
         if (!reactKey) {
             console.error('❌ React instance not found');
@@ -41,26 +45,40 @@
             });
             
             textarea.dispatchEvent(inputEvent);
+            console.log(`✅ ${elementId} changed to: "${text}"`);
             
-            console.log('✅ Textarea updated successfully');
             return true;
             
         } catch (error) {
-            console.error('❌ Error updating textarea:', error);
+            console.error(`❌ Error updating ${elementId}:`, error);
             return false;
         }
     }
-    // Expose to global scope for console access
-    window.changeTitle = function(text) {
-        if (typeof text !== 'string') {
-            console.error('❌ Please provide a string. Usage: changeTitle("Your text here")');
-            return false;
+
+    function getNotificationID() {
+        const notificationElement = document.querySelector('[placeholder="eclasx32 went live!"]');
+        if (!notificationElement) {
+            console.error('❌ Notification element not found');
+            return null;
         }
+        return notificationElement.id;
+    } 
+
+    window.getNotificationID = getNotificationID;
+
+    // Expose to global scope for console access
+    window.changeTextbox = function(elementId, text) {
+        init();
         
-        return reactChangeTitle(text);
+        if (typeof text !== 'string') {
+            console.error('❌ Please provide a string. Usage: changeTextbox(elementIDs.element, "Your text here")');
+            return false;
+        }   
+
+        return ChangeTextbox(elementId, text);
     };
-    // Initialize message
-    console.log('📝 Textarea Console Command Ready!');
-    console.log('Usage: changeTitle("Your custom title here")');
-    console.log('Example: changeTitle("My Custom Broadcast Title")');
+
+    function init() {
+        window.el.notifications = getNotificationID();
+    }
 })();

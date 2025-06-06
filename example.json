@@ -1,0 +1,62 @@
+[
+    {
+        "name": "default", 
+        "description": "Default info to be based off",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": {
+            "title": "Doing stuff",
+            "notification": "somenotification",
+            "category": "Just Chatting",
+            "categoryId": 509658,
+            "tags": ["example", "sample"],
+            "language": "en",
+            "contentClassification": {
+                "politics": false,
+                "drugs": false,
+                "gambling": false,
+                "mature": false, 
+                "profanity": false,
+                "sexual": false,
+                "violence": false
+            },
+            "rerun": false,
+            "branded": false
+        }
+    },
+    {
+        "name": "coding",
+        "description": "coding streams",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": { 
+            "title": "Coding some stuff",
+            "notification": "mr. coder lmao",
+            "category": "Software and Game Development",
+            "categoryId": 1469308723,
+            "tags": ["English", "Russian", "coding"]
+        }
+    },
+    {
+        "name": "test", 
+        "description": "test info to be based off",
+        "lastModified": "2023-10-01T12:00:00Z",
+        "info": {
+            "title": "3rd stream",
+            "notification": "notfis",
+            "category": "Tester",
+            "categoryId": 0, 
+            "tags": ["testetr", "asdasfa"],
+            "language": "ru",
+            "contentClassification": {
+                "politics": true,
+                "drugs": false,
+                "gambling": true,
+                "mature": false, 
+                "profanity": false,
+                "sexual": false,
+                "violence": true
+            },
+            "rerun": true,
+            "branded": true
+        }
+    }
+]
