@@ -13,14 +13,15 @@
         title: '',
         notifications: '',
         category: '',
-        tags: '',
+        tagSelector: '',
+        tags: [],
         language: '',
-        classification: '',
+        classification: [],
         rerun: '',
         branded: ''
     }
 
-    // Initialize
+    // Title and Notifications Textarea
     function ChangeTextbox(textarea, text) {
         const reactKey = Object.keys(textarea).find(key => key.startsWith('__react'));
         if (!reactKey) {
@@ -53,7 +54,7 @@
             return false;
         }
     }
-    // Expose to global scope for console access
+
     window.changeTextbox = function(textbox, text) {
         init();
 
@@ -65,13 +66,100 @@
         return ChangeTextbox(textbox, text);
     };
 
+    // Tags and Classification
+    function deleteAllTags() { // FIX: finish this function
+        let tags = window.el.tags; 
+        let counter = 0;
+        
+        setInterval(() => {
+            if (counter >= tags.length) {
+                console.log("✅ All tags deleted");
+                clearInterval(this);
+                return true;
+            }
+            const tag = tags[counter];
+            console.log(`Deleting tag(${counter}): `, tags);
+            tag.click();
+            counter++;
+        }, 3000);
+
+        // tags.forEach(tag => {
+        //     const name = tag.textContent;
+
+        //     // window.HTMLButtonElement.prototype.click.call(tag);
+        //     // console.log(`✅ Deleted tag: ${name}`);
+            
+        //     setTimeout(() => {
+        //         console.log(`Deleting tag: `, tags);
+        //         tag.click();
+        //         console.log(`✅ Deleted tag: ${name}`);
+        //     }, 5000);
+        // });
+    }
+    
+    function addTag(input, text) {
+        const reactKey = Object.keys(input).find(key => key.startsWith('__react'));
+        if (!reactKey) {
+            console.error('❌ React instance not found');
+            return false;
+        }
+        try {
+            // Use native input value setter to bypass React's value control
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype, 'value'
+            ).set;
+            nativeInputValueSetter.call(input, text);
+            
+            // Create and dispatch React-compatible input event
+            const inputEvent = new Event('input', { bubbles: true });
+            Object.defineProperty(inputEvent, 'target', { 
+                writable: false, 
+                value: input 
+            });
+            input.dispatchEvent(inputEvent);
+            
+            // Simulate a keydown "Enter"
+            const enterEvent = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13
+            });
+            input.dispatchEvent(enterEvent);
+
+            console.log(`✅ ${input.dataset.saverName} (${input.id}) added tag: "${text}"`);
+            return true;
+
+        } catch (error) {
+            console.error(`❌ Error updating ${input.dataset.saverName} (${input.id}):`, error);
+            return false;
+        }
+    }
+    
+    window.addTag = addTag;
+    window.deleteAllTags = deleteAllTags;
+    // Initialization
+    function selectGroupFromLabel(label){
+        return label.parentElement.parentElement.parentElement;
+    }
+
     function init() {
         const path = (window.location.pathname).split("/")
+        const allLablels = document.querySelectorAll("label");
 
         window.el.title = document.querySelector(`#edit-broadcast-title-formgroup`);
         window.el.title.dataset.saverName = "Title";
         window.el.notifications = document.querySelector(`[placeholder="${path[3]} went live!"]`);
         window.el.notifications.dataset.saverName = "Notifications";
+        
+        window.el.tagSelector = document.getElementById("Tags-Selector");
+        window.el.tagSelector.dataset.saverName = "Tag Selector";
+
+        window.el.tags = selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag");
+        window.el.classification = selectGroupFromLabel(allLablels[7]).querySelectorAll("button.tw-form-tag");
+
+        return (window.el);
         
     }
 
