@@ -14,9 +14,10 @@
         notifications: '',
         category: '',
         tagSelector: '',
-        tags: [],
+        currentTags: [],
         language: '',
-        classification: [],
+        btnClassification: '',
+        classifications: [],
         rerun: '',
         branded: ''
     }
@@ -63,7 +64,7 @@
 
     // Tags and Classification
     function deleteAllTags() { // FIX: finish this function
-        let tags = window.el.tags; 
+        let tags = window.el.currentTags; 
         let counter = 0;
         
         setInterval(() => {
@@ -137,18 +138,21 @@
     
     // Rerun and Branded Content
     function toggleCheckboxes(checkbox, state) {
-        if (checkbox.checked !== state) {
-            checkbox.click();
-            console.log(`✅ ${checkbox.dataset.saverName} (${checkbox.id}) set to: ${state}`);
-            return true;
-        } else {
-            console.log(`❌ ${checkbox.dataset.saverName} (${checkbox.id}) is already set to: ${state}`);
+        if (!checkbox || !checkbox.id) {
+            console.error('❌ Invalid checkbox element provided.');
             return false;
         }
 
+        if (checkbox.checked !== state) {
+            checkbox.click();
+            console.log(`✅ ${checkbox.dataset.saverName} (${checkbox.id}) set to: ${state}`);
+        } else {
+            console.log(`ℹ ${checkbox.dataset.saverName} (${checkbox.id}) is already set to: ${state}`);
+        }
+        return true;
     }
 
-    window.toggleCheckboxes = toggleCheckboxes
+    window.toggleCheckboxes = toggleCheckboxes;
 
     // Category
 
@@ -167,28 +171,69 @@
         return label.parentElement.parentElement.parentElement;
     }
 
-    function init() {
+    function dataInput(name, element, beautify = false){
+        window.el[name] = element;
+        if (beautify) {
+            element.dataset.saverName = beautify;
+        }
+    }
+
+    function parseClassifications() {
+        // if (!document.body.lastElementChild.classList.contains("tw-dialog-layer")) return "Parsing Classifications Failed";
+
+        const names = ['', '', "Politics", "Drugs", "Gambling", "Mature Games", "Profanity", "Sexual", "Violence"];
+        let allCheckboxLabels = document.querySelectorAll("label.tw-checkbox__label");
+        console.log("All Checkbox Labels: ", allCheckboxLabels);
+        
+        let classifications = [];
+        allCheckboxLabels.forEach(function (label, index, listObj) {
+            if (index == 0 || index == 1) return; // Skip the first two labels (Rerun and Branded Content)
+            let checkbox = document.getElementById(label.htmlFor);
+            checkbox.dataset.saverName = "Classification " + (names[index] || index);
+            classifications.push(checkbox);
+        });
+
+        console.log("Parsed Classifications: ", classifications);
+        return classifications;
+    }
+
+    window.parseClassifications = parseClassifications;
+
+    async function init() {
         const path = (window.location.pathname).split("/")
         const allLablels = document.querySelectorAll("label");
 
-        window.el.title = document.querySelector(`#edit-broadcast-title-formgroup`);
-        window.el.title.dataset.saverName = "Title";
-        window.el.notifications = document.querySelector(`[placeholder="${path[3]} went live!"]`);
-        window.el.notifications.dataset.saverName = "Notifications";
+        dataInput("title", document.querySelector(`#edit-broadcast-title-formgroup`), "Title");
+        dataInput("notifications", document.querySelector(`[placeholder="${path[3]} went live!"]`), "Notifications");
         
-        window.el.tagSelector = document.getElementById("Tags-Selector");
-        window.el.tagSelector.dataset.saverName = "Tag Selector";
+        dataInput("tagSelector", document.querySelector("#Tags-Selector"), "Tag Selector");
+        dataInput("currentTags", selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag"));
 
-        window.el.tags = selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag");
-        window.el.classification = selectGroupFromLabel(allLablels[7]).querySelectorAll("button.tw-form-tag");
+        const rerunQuery = '[aria-label="Let viewers know your stream was previously recorded. Failure to label Reruns leads to viewer confusion which damages trust"]';
+        const brandedQuery = '[aria-label="Let viewers know if your stream features branded content. This includes paid product placement, endorsement, or other commercial relationships. To learn more, view our Help Center Article and our Terms of Service."]';
 
-        window.el.rerun = document.querySelector('[aria-label="Let viewers know your stream was previously recorded. Failure to label Reruns leads to viewer confusion which damages trust"]');
-        window.el.rerun.dataset.saverName = "Rerun";
-        window.el.branded = document.querySelector('[aria-label="Let viewers know if your stream features branded content. This includes paid product placement, endorsement, or other commercial relationships. To learn more, view our Help Center Article and our Terms of Service."]');
-        window.el.branded.dataset.saverName = "Branded Content";
+        dataInput("rerun", document.querySelector(rerunQuery), "Rerun");
+        dataInput("branded", document.querySelector(brandedQuery), "Branded Content");
+        
+        const observer = new MutationObserver(() => {
+        if (document.body.lastElementChild.classList.contains("tw-dialog-layer")) {
+                observer.disconnect(); // Stop observing once found
+                dataInput("classifications", parseClassifications());
+            }
+        });
+        dataInput("btnClassification", document.querySelector("button.tw-select-button"), "Classification Button");
+        await window.el.btnClassification.click();
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+        });
+
+
 
         return (window.el);
     }
 
     window.init = init;
+
+    
 })();

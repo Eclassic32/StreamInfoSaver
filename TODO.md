@@ -4,7 +4,7 @@
 - - [ ] Category 
 - - [ ] Tags 
 - - [ ] Stream Language 
-- - [ ] Content Classification
+- - [x] Content Classification
 - - [x] Reruns
 - - [x] Branded Content
 - [ ] Support presets from JSON/Local Storage
