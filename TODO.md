@@ -5,8 +5,8 @@
 - - [ ] Tags 
 - - [ ] Stream Language 
 - - [ ] Content Classification
-- - [ ] Reruns
-- - [ ] Branded Content
+- - [x] Reruns
+- - [x] Branded Content
 - [ ] Support presets from JSON/Local Storage
 - - [ ] Load
 - - [ ] Write

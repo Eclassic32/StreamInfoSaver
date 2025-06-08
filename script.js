@@ -23,11 +23,6 @@
 
     // Title and Notifications Textarea
     function ChangeTextbox(textarea, text) {
-        const reactKey = Object.keys(textarea).find(key => key.startsWith('__react'));
-        if (!reactKey) {
-            console.error('❌ React instance not found');
-            return false;
-        }
         try {
             // Use native input value setter to bypass React's value control
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -79,7 +74,7 @@
             }
             const tag = tags[counter];
             console.log(`Deleting tag(${counter}): `, tags);
-            tag.click();
+            tag.remove();
             counter++;
         }, 3000);
 
@@ -139,6 +134,34 @@
     
     window.addTag = addTag;
     window.deleteAllTags = deleteAllTags;
+    
+    // Rerun and Branded Content
+    function toggleCheckboxes(checkbox, state) {
+        if (checkbox.checked !== state) {
+            checkbox.click();
+            console.log(`✅ ${checkbox.dataset.saverName} (${checkbox.id}) set to: ${state}`);
+            return true;
+        } else {
+            console.log(`❌ ${checkbox.dataset.saverName} (${checkbox.id}) is already set to: ${state}`);
+            return false;
+        }
+
+    }
+
+    window.toggleCheckboxes = toggleCheckboxes
+
+    // Category
+
+    // Stream Language
+
+    // Content Classification
+
+
+
+
+
+
+
     // Initialization
     function selectGroupFromLabel(label){
         return label.parentElement.parentElement.parentElement;
@@ -159,8 +182,12 @@
         window.el.tags = selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag");
         window.el.classification = selectGroupFromLabel(allLablels[7]).querySelectorAll("button.tw-form-tag");
 
+        window.el.rerun = document.querySelector('[aria-label="Let viewers know your stream was previously recorded. Failure to label Reruns leads to viewer confusion which damages trust"]');
+        window.el.rerun.dataset.saverName = "Rerun";
+        window.el.branded = document.querySelector('[aria-label="Let viewers know if your stream features branded content. This includes paid product placement, endorsement, or other commercial relationships. To learn more, view our Help Center Article and our Terms of Service."]');
+        window.el.branded.dataset.saverName = "Branded Content";
+
         return (window.el);
-        
     }
 
     window.init = init;
