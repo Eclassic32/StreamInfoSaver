@@ -9,6 +9,8 @@
 // ==/UserScript==
 (function() {
     'use strict';
+    const checkboxNames = ['Rerun', 'Branded', "Politics", "Drugs", "Gambling", "Mature", "Profanity", "Sexual", "Violence"];
+
     window.el = {
         title: '',
         notifications: '',
@@ -19,7 +21,7 @@
         btnClassification: '',
         classifications: [],
         rerun: '',
-        branded: ''
+        branded: '',
     }
 
     // Title and Notifications Textarea
@@ -178,28 +180,35 @@
         }
     }
 
-    function parseClassifications() {
-        // if (!document.body.lastElementChild.classList.contains("tw-dialog-layer")) return "Parsing Classifications Failed";
+    async function parseClassifications(index, state = null) {
+        return new Promise((resolve) => {
+            const observer = new MutationObserver(() => {
+                if (document.body.lastElementChild.classList.contains("tw-dialog-layer")) {
+                    observer.disconnect(); // Stop observing once found
 
-        const names = ['', '', "Politics", "Drugs", "Gambling", "Mature Games", "Profanity", "Sexual", "Violence"];
-        let allCheckboxLabels = document.querySelectorAll("label.tw-checkbox__label");
-        console.log("All Checkbox Labels: ", allCheckboxLabels);
-        
-        let classifications = [];
-        allCheckboxLabels.forEach(function (label, index, listObj) {
-            if (index == 0 || index == 1) return; // Skip the first two labels (Rerun and Branded Content)
-            let checkbox = document.getElementById(label.htmlFor);
-            checkbox.dataset.saverName = "Classification " + (names[index] || index);
-            classifications.push(checkbox);
+                    let allCheckboxLabels = document.querySelectorAll("label.tw-checkbox__label");
+                    let checkbox = document.getElementById(allCheckboxLabels[index].htmlFor);
+                    checkbox.dataset.saverName = "Classification " + (checkboxNames[index] || index);
+
+                    if (state !== null) {
+                        resolve(toggleCheckboxes(checkbox, state));
+                    } else {
+                        resolve(checkbox.checked);
+                    }
+                }
+            });
+
+            window.el.btnClassification.click();
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
         });
-
-        console.log("Parsed Classifications: ", classifications);
-        return classifications;
     }
 
     window.parseClassifications = parseClassifications;
 
-    async function init() {
+    function init() {
         const path = (window.location.pathname).split("/")
         const allLablels = document.querySelectorAll("label");
 
@@ -211,22 +220,15 @@
 
         const rerunQuery = '[aria-label="Let viewers know your stream was previously recorded. Failure to label Reruns leads to viewer confusion which damages trust"]';
         const brandedQuery = '[aria-label="Let viewers know if your stream features branded content. This includes paid product placement, endorsement, or other commercial relationships. To learn more, view our Help Center Article and our Terms of Service."]';
-
         dataInput("rerun", document.querySelector(rerunQuery), "Rerun");
         dataInput("branded", document.querySelector(brandedQuery), "Branded Content");
         
-        const observer = new MutationObserver(() => {
-        if (document.body.lastElementChild.classList.contains("tw-dialog-layer")) {
-                observer.disconnect(); // Stop observing once found
-                dataInput("classifications", parseClassifications());
-            }
-        });
         dataInput("btnClassification", document.querySelector("button.tw-select-button"), "Classification Button");
-        await window.el.btnClassification.click();
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
+        let classifications = {};
+        for (let i = 2; i < checkboxNames.length; i++) {
+            classifications[checkboxNames[i]] = (state) => parseClassifications(i, state);
+        }
+        dataInput("classifications", classifications);
 
 
 
