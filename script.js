@@ -65,36 +65,34 @@
     };
 
     // Tags and Classification
-    function deleteAllTags() { // FIX: finish this function
-        let tags = window.el.currentTags; 
-        let counter = 0;
-        
-        setInterval(() => {
-            if (counter >= tags.length) {
-                console.log("✅ All tags deleted");
-                clearInterval(this);
-                return true;
-            }
-            const tag = tags[counter];
-            console.log(`Deleting tag(${counter}): `, tags);
-            tag.remove();
-            counter++;
-        }, 3000);
-
-        // tags.forEach(tag => {
-        //     const name = tag.textContent;
-
-        //     // window.HTMLButtonElement.prototype.click.call(tag);
-        //     // console.log(`✅ Deleted tag: ${name}`);
-            
-        //     setTimeout(() => {
-        //         console.log(`Deleting tag: `, tags);
-        //         tag.click();
-        //         console.log(`✅ Deleted tag: ${name}`);
-        //     }, 5000);
-        // });
-    }
     
+    async function deleteAllTags() {
+    for (let i = el.currentTags.length - 1; i >= 0; i--) {
+        const activeTag = el.currentTags[i];
+        activeTag.click();
+
+        // Wait for the specific tag to be removed
+        await new Promise((resolve) => {
+            const observer = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    if (mutation.type === 'childList') {
+                        for (const node of mutation.removedNodes) {
+                            if (node === activeTag || node.contains(activeTag)) {
+                                observer.disconnect();
+                                resolve();
+                                return;
+                            }
+                        }
+                    }
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    }
+    return true;
+}
+
+
     function addTag(input, text) {
         const reactKey = Object.keys(input).find(key => key.startsWith('__react'));
         if (!reactKey) {
@@ -162,24 +160,6 @@
 
     // Content Classification
 
-
-
-
-
-
-
-    // Initialization
-    function selectGroupFromLabel(label){
-        return label.parentElement.parentElement.parentElement;
-    }
-
-    function dataInput(name, element, beautify = false){
-        window.el[name] = element;
-        if (beautify) {
-            element.dataset.saverName = beautify;
-        }
-    }
-
     async function parseClassifications(index, state = null) {
         return new Promise((resolve) => {
             const observer = new MutationObserver(() => {
@@ -205,8 +185,19 @@
             });
         });
     }
-
     window.parseClassifications = parseClassifications;
+
+    // Initialization
+    function selectGroupFromLabel(label){
+        return label.parentElement.parentElement.parentElement;
+    }
+
+    function dataInput(name, element, beautify = false){
+        window.el[name] = element;
+        if (beautify) {
+            element.dataset.saverName = beautify;
+        }
+    }
 
     function init() {
         const path = (window.location.pathname).split("/")

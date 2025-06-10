@@ -2,7 +2,7 @@
 - - [x] Title 
 - - [x] Go Live Notification 
 - - [ ] Category 
-- - [ ] Tags 
+- - [x] Tags 
 - - [ ] Stream Language 
 - - [x] Content Classification
 - - [x] Reruns
