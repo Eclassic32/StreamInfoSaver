@@ -11,6 +11,18 @@
     'use strict';
     const checkboxNames = ['Rerun', 'Branded', "Politics", "Drugs", "Gambling", "Mature", "Profanity", "Sexual", "Violence"];
 
+    const initObserver = new MutationObserver(() => {
+        if (document.getElementById("Tags-Selector")) {
+            initObserver.disconnect(); // Stop observing once found
+            init();
+            console.log("✅ Twitch Stream Manager initialized successfully.");
+        }
+    });
+    initObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+    });
+
     window.el = {
         title: '',
         notifications: '',
@@ -153,11 +165,14 @@
     window.toggleCheckboxes = toggleCheckboxes;
 
     // Category
-
     function ChangeCategory(selector, text) {
         try {
-            // Close current category details if open
             if (document.querySelector(".category-details")){
+                if (document.querySelector(".category-details .category-details__name-text").textContent === text) {
+                    console.log(`❗ ${selector.dataset.saverName} (${selector.id}) is already set to: "${text}"`);
+                    return true;
+                }
+
                 document.querySelector(".category-details button[aria-label=\"Cancel\"]").click();
             }
 
@@ -275,6 +290,4 @@
     }
 
     window.init = init;
-
-    
 })();

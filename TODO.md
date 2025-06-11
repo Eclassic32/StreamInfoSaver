@@ -1,4 +1,4 @@
-- [ ] Inject info into https://dashboard.twitch.tv/popout/u/{username}/stream-manager/edit-stream-info with script
+- [x] Inject info into https://dashboard.twitch.tv/popout/u/{username}/stream-manager/edit-stream-info with script
 - - [x] Title 
 - - [x] Go Live Notification 
 - - [x] Category 
