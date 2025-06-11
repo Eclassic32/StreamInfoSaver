@@ -90,9 +90,7 @@
         });
     }
     return true;
-}
-
-
+    }
     function addTag(input, text) {
         const reactKey = Object.keys(input).find(key => key.startsWith('__react'));
         if (!reactKey) {
@@ -156,10 +154,56 @@
 
     // Category
 
+    function ChangeCategory(selector, text) {
+        try {
+            // Close current category details if open
+            if (document.querySelector(".category-details")){
+                document.querySelector(".category-details button[aria-label=\"Cancel\"]").click();
+            }
+
+            // Use native input value setter to bypass React's value control
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                'value'
+            ).set;
+            
+            nativeInputValueSetter.call(selector, text);
+            
+            // Create and dispatch React-compatible input event
+            const inputEvent = new Event('input', { bubbles: true });
+            Object.defineProperty(inputEvent, 'target', { 
+                writable: false, 
+                value: selector 
+            });
+            selector.dispatchEvent(inputEvent);
+            
+            const observer = new MutationObserver(() => {
+                if (el.categoryDropdown.children[0].type === "submit") {
+                    observer.disconnect();
+                    
+                    // Select the first element in the dropdown
+                    window.el.categoryDropdown.children[0].click();
+                }
+                    
+            });
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+
+            console.log(`✅ ${selector.dataset.saverName} (${selector.id}) changed to: "${text}"`);
+            return true;
+            
+        } catch (error) {
+            console.error(`❌ Error updating ${selector.dataset.saverName} (${selector.id}):`, error);
+            return false;
+        }
+    }
+    window.ChangeCategory = ChangeCategory;
+
     // Stream Language
 
     // Content Classification
-
     async function parseClassifications(index, state = null) {
         return new Promise((resolve) => {
             const observer = new MutationObserver(() => {
@@ -205,6 +249,10 @@
 
         dataInput("title", document.querySelector(`#edit-broadcast-title-formgroup`), "Title");
         dataInput("notifications", document.querySelector(`[placeholder="${path[3]} went live!"]`), "Notifications");
+
+        dataInput("categorySelector", document.getElementById("Category-Selector"), "Category Selector");
+        dataInput("categoryDropdown",  document.querySelector(".edit-broadcast__category-dropdown-search .simplebar-content").children[0], "Category Dropdown");
+
         
         dataInput("tagSelector", document.querySelector("#Tags-Selector"), "Tag Selector");
         dataInput("currentTags", selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag"));
@@ -221,7 +269,7 @@
         }
         dataInput("classifications", classifications);
 
-
+        dataInput("language", document.querySelector("select"), "Stream Language");
 
         return (window.el);
     }
