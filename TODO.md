@@ -3,7 +3,7 @@
 - - [x] Go Live Notification 
 - - [x] Category 
 - - [x] Tags 
-- - [ ] Stream Language 
+- - [x] Stream Language 
 - - [x] Content Classification
 - - [x] Reruns
 - - [x] Branded Content

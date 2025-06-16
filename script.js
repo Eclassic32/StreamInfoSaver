@@ -9,6 +9,19 @@
 // ==/UserScript==
 (function() {
     'use strict';
+    window.el = {
+        title: '',
+        notifications: '',
+        category: '',
+        tagSelector: '',
+        currentTags: [],
+        language: '',
+        btnClassification: '',
+        classifications: [],
+        rerun: '',
+        branded: '',
+    }
+
     const checkboxNames = ['Rerun', 'Branded', "Politics", "Drugs", "Gambling", "Mature", "Profanity", "Sexual", "Violence"];
 
     const initObserver = new MutationObserver(() => {
@@ -23,18 +36,7 @@
         subtree: true,
     });
 
-    window.el = {
-        title: '',
-        notifications: '',
-        category: '',
-        tagSelector: '',
-        currentTags: [],
-        language: '',
-        btnClassification: '',
-        classifications: [],
-        rerun: '',
-        branded: '',
-    }
+    
 
     // Title and Notifications Textarea
     function ChangeTextbox(textarea, text) {
@@ -64,17 +66,7 @@
             return false;
         }
     }
-
-    window.changeTextbox = function(textbox, text) {
-        init();
-
-        if (typeof text !== 'string') {
-            console.error('❌ Please provide a string. Usage: changeTextbox(el.element, "Your text here")');
-            return false;
-        }   
-
-        return ChangeTextbox(textbox, text);
-    };
+    window.ChangeTextbox = ChangeTextbox;
 
     // Tags and Classification
     
@@ -217,7 +209,41 @@
     window.ChangeCategory = ChangeCategory;
 
     // Stream Language
-
+    function ChangeLanguage(element, value) {
+        try {
+            // Use native input value setter to bypass React's value control
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLSelectElement.prototype, 
+                'value'
+            ).set;
+            
+            nativeInputValueSetter.call(element, value);
+    
+            // Create and dispatch React-compatible input event
+            const inputEvent = new Event('input', { bubbles: true });
+            Object.defineProperty(inputEvent, 'target', { 
+                writable: false, 
+                value: element 
+            });
+            element.dispatchEvent(inputEvent);
+    
+            // Create and dispatch React-compatible change event
+            const changeEvent = new Event('change', { bubbles: true });
+            Object.defineProperty(changeEvent, 'target', { 
+                writable: false, 
+                value: element 
+            });
+            element.dispatchEvent(changeEvent);
+    
+            console.log(`✅ ${element.dataset.saverName} (${element.id}) changed to: "${value}"`);
+            return true;
+            
+        } catch (error) {
+            console.error(`❌ Error updating ${element.dataset.saverName} (${element.id}):`, error);
+            return false;
+        }
+    }
+    window.ChangeLanguage = ChangeLanguage;
     // Content Classification
     async function parseClassifications(index, state = null) {
         return new Promise((resolve) => {
