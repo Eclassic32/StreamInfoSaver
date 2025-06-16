@@ -2,12 +2,11 @@
     {
         "name": "default", 
         "description": "Default info to be based off",
-        "lastModified": "2023-10-01T12:00:00Z",
+        "lastModified": 1750053206548,
         "info": {
             "title": "Doing stuff",
             "notification": "somenotification",
             "category": "Just Chatting",
-            "categoryId": 509658,
             "tags": ["example", "sample"],
             "language": "en",
             "contentClassification": {
@@ -26,7 +25,7 @@
     {
         "name": "coding",
         "description": "coding streams",
-        "lastModified": "2023-10-01T12:00:00Z",
+        "lastModified": 1750053206548,
         "info": { 
             "title": "Coding some stuff",
             "notification": "mr. coder lmao",
@@ -38,7 +37,7 @@
     {
         "name": "test", 
         "description": "test info to be based off",
-        "lastModified": "2023-10-01T12:00:00Z",
+        "lastModified": 1750053206548,
         "info": {
             "title": "3rd stream",
             "notification": "notfis",

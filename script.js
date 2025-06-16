@@ -9,10 +9,10 @@
 // ==/UserScript==
 (function() {
     'use strict';
+    window.currentPresets = null;
     window.el = {
         title: '',
         notifications: '',
-        category: '',
         tagSelector: '',
         currentTags: [],
         language: '',
@@ -28,6 +28,7 @@
         if (document.getElementById("Tags-Selector")) {
             initObserver.disconnect(); // Stop observing once found
             init();
+            window.currentPresets = JSON.parse(localStorage.getItem("StreamInfoSaver-Data")) || "notfound";
             console.log("✅ Twitch Stream Manager initialized successfully.");
         }
     });
@@ -36,7 +37,44 @@
         subtree: true,
     });
 
-    
+    function setPresetData(presetIndex){
+        if (!window.currentPresets){
+            console.log(`❌ No preset data found. Please save a preset first.`);
+            return false;
+        }
+        const preset = window.currentPresets[presetIndex];
+        const info = preset.info;
+        if (!preset) {
+            console.log(`❌ Preset at index ${presetIndex} does not exist.`);
+            return false;
+        }
+
+        window.el.classifications.Politics(info.contentClassification.politics);
+        window.el.classifications.Drugs(info.contentClassification.drugs);
+        window.el.classifications.Gambling(info.contentClassification.gambling);
+        window.el.classifications.Mature(info.contentClassification.mature);
+        window.el.classifications.Profanity(info.contentClassification.profanity);
+        window.el.classifications.Sexual(info.contentClassification.sexual);
+        window.el.classifications.Violence(info.contentClassification.violence);
+        
+        ChangeTextbox(window.el.title, info.title);
+        ChangeTextbox(window.el.notifications, info.notification);
+        ChangeCategory(window.el.categorySelector, info.category);
+        deleteAllTags();
+        info.tags.forEach((tag) => {
+            if (tag && tag.trim() !== "") {
+                addTag(window.el.tagSelector, tag);
+            }
+        });
+        ChangeLanguage(window.el.language, info.language);
+
+        toggleCheckboxes(window.el.rerun, info.rerun);
+        toggleCheckboxes(window.el.branded, info.branded);
+
+        console.log(`✅ Preset ${presetIndex} (${preset.name}) applied successfully.`);
+        return true;
+    }
+    window.setPresetData = setPresetData;
 
     // Title and Notifications Textarea
     function ChangeTextbox(textarea, text) {
@@ -71,29 +109,31 @@
     // Tags and Classification
     
     async function deleteAllTags() {
-    for (let i = el.currentTags.length - 1; i >= 0; i--) {
-        const activeTag = el.currentTags[i];
-        activeTag.click();
+        dataInput("currentTags", selectGroupFromLabel(document.querySelectorAll("label")[4]).querySelectorAll("button.tw-form-tag"));
 
-        // Wait for the specific tag to be removed
-        await new Promise((resolve) => {
-            const observer = new MutationObserver((mutations) => {
-                for (const mutation of mutations) {
-                    if (mutation.type === 'childList') {
-                        for (const node of mutation.removedNodes) {
-                            if (node === activeTag || node.contains(activeTag)) {
-                                observer.disconnect();
-                                resolve();
-                                return;
+        for (let i = el.currentTags.length - 1; i >= 0; i--) {
+            const activeTag = el.currentTags[i];
+            activeTag.click();
+
+            // Wait for the specific tag to be removed
+            await new Promise((resolve) => {
+                const observer = new MutationObserver((mutations) => {
+                    for (const mutation of mutations) {
+                        if (mutation.type === 'childList') {
+                            for (const node of mutation.removedNodes) {
+                                if (node === activeTag || node.contains(activeTag)) {
+                                    observer.disconnect();
+                                    resolve();
+                                    return;
+                                }
                             }
                         }
                     }
-                }
+                });
+                observer.observe(document.body, { childList: true, subtree: true });
             });
-            observer.observe(document.body, { childList: true, subtree: true });
-        });
-    }
-    return true;
+        }
+        return true;
     }
     function addTag(input, text) {
         const reactKey = Object.keys(input).find(key => key.startsWith('__react'));
@@ -153,7 +193,6 @@
         }
         return true;
     }
-
     window.toggleCheckboxes = toggleCheckboxes;
 
     // Category
@@ -244,6 +283,7 @@
         }
     }
     window.ChangeLanguage = ChangeLanguage;
+    
     // Content Classification
     async function parseClassifications(index, state = null) {
         return new Promise((resolve) => {
@@ -309,11 +349,9 @@
             classifications[checkboxNames[i]] = (state) => parseClassifications(i, state);
         }
         dataInput("classifications", classifications);
-
         dataInput("language", document.querySelector("select"), "Stream Language");
 
         return (window.el);
     }
-
     window.init = init;
 })();
