@@ -37,7 +37,8 @@
         subtree: true,
     });
 
-    function setPresetData(presetIndex){
+    // Preset Handling
+    async function setPresetData(presetIndex){
         if (!window.currentPresets){
             console.log(`❌ No preset data found. Please save a preset first.`);
             return false;
@@ -52,21 +53,22 @@
         window.el.classifications.Politics(info.contentClassification.politics);
         window.el.classifications.Drugs(info.contentClassification.drugs);
         window.el.classifications.Gambling(info.contentClassification.gambling);
-        window.el.classifications.Mature(info.contentClassification.mature);
+        // window.el.classifications.Mature(info.contentClassification.mature); // Mature is set by category
         window.el.classifications.Profanity(info.contentClassification.profanity);
         window.el.classifications.Sexual(info.contentClassification.sexual);
         window.el.classifications.Violence(info.contentClassification.violence);
         
         ChangeTextbox(window.el.title, info.title);
         ChangeTextbox(window.el.notifications, info.notification);
-        ChangeCategory(window.el.categorySelector, info.category);
-        deleteAllTags();
-        info.tags.forEach((tag) => {
-            if (tag && tag.trim() !== "") {
-                addTag(window.el.tagSelector, tag);
-            }
-        });
-        ChangeLanguage(window.el.language, info.language);
+        ChangeCategory(info.category);
+        await deleteAllTags();
+        await addManyTags(info.tags);
+        // info.tags.forEach((tag) => {
+        //     if (tag && tag.trim() !== "") {
+        //         addTag(tag);
+        //     }
+        // });
+        ChangeLanguage(info.language);
 
         toggleCheckboxes(window.el.rerun, info.rerun);
         toggleCheckboxes(window.el.branded, info.branded);
@@ -106,10 +108,10 @@
     }
     window.ChangeTextbox = ChangeTextbox;
 
-    // Tags and Classification
+    // Tags 
     
     async function deleteAllTags() {
-        dataInput("currentTags", selectGroupFromLabel(document.querySelectorAll("label")[4]).querySelectorAll("button.tw-form-tag"));
+        dataInput("currentTags", getAllTags());
 
         for (let i = el.currentTags.length - 1; i >= 0; i--) {
             const activeTag = el.currentTags[i];
@@ -135,7 +137,8 @@
         }
         return true;
     }
-    function addTag(input, text) {
+    function addTag(text) {
+        const input = window.el.tagSelector;
         const reactKey = Object.keys(input).find(key => key.startsWith('__react'));
         if (!reactKey) {
             console.error('❌ React instance not found');
@@ -174,8 +177,32 @@
             return false;
         }
     }
+    async function addManyTags(tagsArray) {
+        tagsArray.forEach(async (tag) => {            
+            addTag(tag);
+            
+            await new Promise((resolve) => {
+                const observer = new MutationObserver(() => {
+                    const currentTags = getAllTags();
+                    if (!currentTags || currentTags.length == 0) return;                    
+                    if (currentTags[currentTags.length-1].textContent == tag) {
+                        observer.disconnect(); // Stop observing once found
+                        resolve();
+                    }
+                });
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                });
+            });
+
+        });
+        window.el.currentTags = getAllTags();
+        return true;
+    }
     
     window.addTag = addTag;
+    window.addManyTags = addManyTags;
     window.deleteAllTags = deleteAllTags;
     
     // Rerun and Branded Content
@@ -196,7 +223,8 @@
     window.toggleCheckboxes = toggleCheckboxes;
 
     // Category
-    function ChangeCategory(selector, text) {
+    function ChangeCategory(text) {
+        const selector = window.el.categorySelector;
         try {
             if (document.querySelector(".category-details")){
                 if (document.querySelector(".category-details .category-details__name-text").textContent === text) {
@@ -248,7 +276,8 @@
     window.ChangeCategory = ChangeCategory;
 
     // Stream Language
-    function ChangeLanguage(element, value) {
+    function ChangeLanguage(value) {
+        const element = window.el.language;
         try {
             // Use native input value setter to bypass React's value control
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -316,6 +345,12 @@
     function selectGroupFromLabel(label){
         return label.parentElement.parentElement.parentElement;
     }
+    window.selectGroupFromLabel = selectGroupFromLabel;
+
+    function getAllTags() {
+        return selectGroupFromLabel(document.querySelectorAll("label")[4]).querySelectorAll("button.tw-form-tag");
+    }
+    window.getAllTags = getAllTags;
 
     function dataInput(name, element, beautify = false){
         window.el[name] = element;
@@ -336,7 +371,7 @@
 
         
         dataInput("tagSelector", document.querySelector("#Tags-Selector"), "Tag Selector");
-        dataInput("currentTags", selectGroupFromLabel(allLablels[4]).querySelectorAll("button.tw-form-tag"));
+        dataInput("currentTags", getAllTags());
 
         const rerunQuery = '[aria-label="Let viewers know your stream was previously recorded. Failure to label Reruns leads to viewer confusion which damages trust"]';
         const brandedQuery = '[aria-label="Let viewers know if your stream features branded content. This includes paid product placement, endorsement, or other commercial relationships. To learn more, view our Help Center Article and our Terms of Service."]';
